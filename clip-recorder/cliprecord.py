@@ -35,7 +35,7 @@ def transparent(color, opacity=0.2):
     return r, g, b, opacity
 
 class Recordamajig:
-    def __init__(self, device="mic_out", output_device="default", samplerate=16000):
+    def __init__(self, device="mic_out", output_device="default", samplerate=48000):
         self._state = "initial"
         self._clip = 1
 
@@ -72,11 +72,12 @@ class Recordamajig:
         self._clip_exists = False
         self._update_clip()
 
+        # Modify the input stream settings
         self._stream = sounddevice.InputStream(
-            device=self._device,  # adau7002",
-            dtype="int16",
-            channels=2,
-            samplerate=self._samplerate,
+            device=self._device,  # 'mic_out'
+            dtype="int32",  # S32_LE format (32-bit signed)
+            channels=2,  # Stereo
+            samplerate=self._samplerate,  # 48000 Hz
             callback=self.audio_callback
         )
         self._out_stream = sounddevice.OutputStream(
@@ -181,16 +182,17 @@ class Recordamajig:
         return self._written / self._samplerate
 
     def audio_callback(self, indata, frames, time, status):
-        self._vu_left = numpy.average(numpy.abs(indata[:,0])) / 65535.0 * 10
-        self._vu_right = numpy.average(numpy.abs(indata[:,1])) / 65535.0 * 10
-        #print(self._vu_left, self._vu_right)
-
+        # Adjust for 32-bit integer format
+        self._vu_left = numpy.average(numpy.abs(indata[:,0])) / 2147483647.0 * 10  # Max value for 32-bit integer
+        self._vu_right = numpy.average(numpy.abs(indata[:,1])) / 2147483647.0 * 10
         self._graph.append(min(1.0, max(self._vu_left, self._vu_right)))
         self._graph = self._graph[-44:]
 
         if self._recording and self._wave is not None:
             self._written += frames
             self._wave.writeframes(indata.tobytes())
+
+
 
     def audio_playback_callback(self, outdata, frames, time, status):
         raw_data = self._wave_read.readframes(frames)

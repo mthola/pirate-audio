@@ -31,23 +31,6 @@ dtoverlay=adau7002-simple
 ```
 (See [Clip Recorder](./clip-recorder) for further example of use.)
 
-## Using with Spotify Connect
-
-If you want to display album art and track information on your Pirate Audio LCD then check out [PiDi Spotify](https://github.com/pimoroni/pidi-spotify).
-
-Note: PiDi Spotify is currently in beta, and does not work alongside [Mopidy](https://mopidy.com/). If you want to smush track information into Mopidy from [Raspotify](https://dtcooper.github.io/raspotify/) see: https://github.com/pimoroni/pirate-audio/issues/17 
-
-## Using With Mopidy
-
-We've created plugins to get you up and running with Pirate Audio and Mopidy.
-
-These will give you album art display, volume, play/pause and skip control.
-
-## Build Your Own
-
-If you're planning to build your own application you'll find some inspiration in examples.
-
-But first you'll need some dependencies:
 
 ```
 sudo apt update
@@ -62,4 +45,3 @@ sudo pip install st7789
 
 For more display examples see the [st7789 Python library examples](https://github.com/pimoroni/st7789-python/tree/master/examples).
 
-For more help with using the Pirate Audio Headphone Amp, see [build your own](build%20your%20own/README.md).
